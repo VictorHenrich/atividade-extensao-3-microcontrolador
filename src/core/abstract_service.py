@@ -7,7 +7,3 @@ class AbstractService(AbstractClass):
 
     @AbstractClass.abstract_method
     def execute(self): ...
-
-    def perform_loop(self):
-        while True:
-            self.execute()

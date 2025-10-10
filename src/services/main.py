@@ -66,4 +66,5 @@ class MainService(AbstractService):
         if not self.__start_and_validate_stream_client():
             return
 
-        self.__send_data_to_socket_server()
+        while True:
+            self.__send_data_to_socket_server()
