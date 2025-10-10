@@ -30,6 +30,8 @@ class MainService(AbstractService):
                 Logging.warning("O Wifi ainda não foi conectado, aguarde um momento.")
 
                 return False
+            
+            Logging.info("Wifi conectado com sucesso!")
 
             return True
 
