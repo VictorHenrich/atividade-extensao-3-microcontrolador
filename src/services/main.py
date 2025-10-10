@@ -16,12 +16,25 @@ class MainService(AbstractService):
 
         self.__geolocation_service = GeolocationService()
 
+    def __connect_to_network(self):
+        try:
+            Network.connect_wifi()
+
+        except Exception as error:
+            Logging.error(f"Falha ao se conectar no wifi: {error}")
+
+            return False
+
+        else:
+            if not Network.wifi_connected():
+                Logging.warning("O Wifi ainda não foi conectado, aguarde um momento.")
+
+                return False
+
+            return True
+
     def execute(self):
-        Network.connect_wifi()
-
-        if not Network.wifi_connected():
-            Logging.warning("O Wifi ainda não foi conectado, aguarde um momento.")
-
+        if not self.__connect_to_network():
             return
 
         self.__stream_client.start()
