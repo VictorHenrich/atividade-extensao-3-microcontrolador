@@ -31,7 +31,7 @@ class MainService(AbstractService):
 
                 return False
             
-            Logging.info("Wifi conectado com sucesso!")
+            Logging.info("Wifi conectado com sucesso.")
 
             return True
 
