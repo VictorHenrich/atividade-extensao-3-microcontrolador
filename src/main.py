@@ -1,6 +1,6 @@
-from services.main import MainService
+from services.root import RootService
 
 if __name__ == "__main__":
-    service = MainService()
+    service = RootService()
 
     service.execute()

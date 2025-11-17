@@ -1,18 +1,14 @@
 from core.abstract_service import AbstractService
-from core.stream import StreamClient, AbstractStreamClientHandler
+from core.mqtt import MQTT
+from core.settings import MQTT_GEOLOCATION_TOPIC
 from services.geolocation import GeolocationService
 from utils.logging import Logging
 from utils.network import Network
 
 
-class ClientHandler(AbstractStreamClientHandler):
-    def on_receive(self, data):
-        Logging.info(f"Recebendo dados do servidor: {data}")
-
-
-class MainService(AbstractService):
+class RootService(AbstractService):
     def __init__(self):
-        self.__stream_client = StreamClient(ClientHandler)
+        self.__mqtt_client = MQTT()
 
         self.__geolocation_service = GeolocationService()
 
@@ -35,17 +31,17 @@ class MainService(AbstractService):
 
             return True
 
-    def __start_and_validate_stream_client(self):
+    def __start_and_validate_mqtt_client(self):
         try:
-            self.__stream_client.start()
+            self.__mqtt_client.start()
 
         except Exception as error:
-            Logging.error(f"Falha ao se conectar no servidor Socket: {error}")
+            Logging.error(f"Falha ao se conectar no servidor MQTT: {error}")
 
             return False
 
         else:
-            Logging.info("Servidor Socket conectado com sucesso.")
+            Logging.info("Servidor MQTT conectado com sucesso.")
 
             return True
 
@@ -57,13 +53,13 @@ class MainService(AbstractService):
 
         Logging.info("Disparando mensagem ao servidor.")
 
-        self.__stream_client.send_data(geolocation_data)
+        self.__mqtt_client.publish(MQTT_GEOLOCATION_TOPIC, geolocation_data)
 
     def execute(self):
         if not self.__connect_to_network():
             return
 
-        if not self.__start_and_validate_stream_client():
+        if not self.__start_and_validate_mqtt_client():
             return
 
         while True:
