@@ -4,7 +4,7 @@ import json
 import time
 
 from core.settings import MQTT_HOST, MQTT_PORT, MQTT_CLIENT_ID
-from core.logging import Logging
+from utils.logging import Logging
 from utils.abstract_class import AbstractClass
 
 
@@ -18,7 +18,7 @@ class MQTTHandler(AbstractClass):
     def mqtt_reference(self):
         return self.__mqtt_reference
 
-    @abstract_method
+    @AbstractClass.abstract_method
     def handle(self, data): ...
 
     def serialize(self, message):
@@ -26,9 +26,7 @@ class MQTTHandler(AbstractClass):
 
 
 class MQTT(MQTTClient):
-    def __init__(
-        self, host=MQTT_HOST, port=MQTT_PORT, handler_classes=[]
-    ):
+    def __init__(self, host=MQTT_HOST, port=MQTT_PORT, handler_classes=[]):
         client_id = f"{MQTT_CLIENT_ID}_{time.time()}"
 
         super().__init__(client_id, host, port)

@@ -1,3 +1,4 @@
+import time
 from core.abstract_service import AbstractService
 from core.mqtt import MQTT
 from core.settings import MQTT_GEOLOCATION_TOPIC
@@ -56,11 +57,15 @@ class RootService(AbstractService):
         self.__mqtt_client.publish(MQTT_GEOLOCATION_TOPIC, geolocation_data)
 
     def execute(self):
-        if not self.__connect_to_network():
-            return
-
-        if not self.__start_and_validate_mqtt_client():
-            return
+        Logging.info("Iniciando serviço principal.")
 
         while True:
+            time.sleep(1)
+
+            if not self.__connect_to_network():
+                continue
+
+            if not self.__start_and_validate_mqtt_client():
+                continue
+
             self.__send_data_to_socket_server()
