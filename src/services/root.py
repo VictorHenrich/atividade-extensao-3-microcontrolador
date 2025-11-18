@@ -20,17 +20,17 @@ class RootService(AbstractService):
         except Exception as error:
             Logging.error(f"Falha ao se conectar no wifi: {error}")
 
-            yield False
+            return False
 
         else:
             if not Network.wifi_connected():
                 Logging.warning("O Wifi ainda não foi conectado, tentando novamente.")
 
-                yield False
+                return False
 
             Logging.info("Wifi conectado com sucesso.")
 
-            yield True
+            return True
 
     def __start_and_validate_mqtt_client(self):
         try:
@@ -39,24 +39,28 @@ class RootService(AbstractService):
         except Exception as error:
             Logging.error(f"Falha ao se conectar no servidor MQTT: {error}")
 
-            yield False
+            return False
 
         else:
             Logging.info("Servidor MQTT conectado com sucesso.")
 
-            yield True
+            return True
 
     def __send_data_to_socket_server(self):
         geolocation_data = self.__geolocation_service.execute()
 
         if not geolocation_data:
-            yield False
+            return False
 
-        Logging.info("Disparando mensagem ao servidor.")
+        Logging.info(f"Disparando mensagem ao servidor: {geolocation_data}")
 
-        self.__mqtt_client.publish(MQTT_GEOLOCATION_TOPIC, geolocation_data)
+        try:
+            self.__mqtt_client.publish(MQTT_GEOLOCATION_TOPIC, geolocation_data)
 
-        yield
+        except Exception as error:
+            Logging.error(f"Falha ao disparar mensagem ao servidor MQTT: {error}")
+
+            return False
 
     def execute(self):
         Logging.info("...Iniciando serviço principal...")
