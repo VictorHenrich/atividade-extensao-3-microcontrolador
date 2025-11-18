@@ -20,17 +20,17 @@ class RootService(AbstractService):
         except Exception as error:
             Logging.error(f"Falha ao se conectar no wifi: {error}")
 
-            return False
+            yield False
 
         else:
             if not Network.wifi_connected():
-                Logging.warning("O Wifi ainda não foi conectado, aguarde um momento.")
+                Logging.warning("O Wifi ainda não foi conectado, tentando novamente.")
 
-                return False
+                yield False
 
             Logging.info("Wifi conectado com sucesso.")
 
-            return True
+            yield True
 
     def __start_and_validate_mqtt_client(self):
         try:
@@ -39,33 +39,36 @@ class RootService(AbstractService):
         except Exception as error:
             Logging.error(f"Falha ao se conectar no servidor MQTT: {error}")
 
-            return False
+            yield False
 
         else:
             Logging.info("Servidor MQTT conectado com sucesso.")
 
-            return True
+            yield True
 
     def __send_data_to_socket_server(self):
         geolocation_data = self.__geolocation_service.execute()
 
         if not geolocation_data:
-            return
+            yield False
 
         Logging.info("Disparando mensagem ao servidor.")
 
         self.__mqtt_client.publish(MQTT_GEOLOCATION_TOPIC, geolocation_data)
 
+        yield
+
     def execute(self):
-        Logging.info("Iniciando serviço principal.")
+        Logging.info("...Iniciando serviço principal...")
 
-        while True:
-            time.sleep(1)
+        Logging.info("Conectando-se ao Wifi.")
 
-            if not self.__connect_to_network():
-                continue
+        self.run_routine(self.__connect_to_network)
 
-            if not self.__start_and_validate_mqtt_client():
-                continue
+        Logging.info("Conectando-se ao servidor MQTT.")
 
-            self.__send_data_to_socket_server()
+        self.run_routine(self.__start_and_validate_mqtt_client)
+
+        Logging.info("Abrindo comunicação com GPS.")
+
+        self.run_routine(self.__send_data_to_socket_server)
