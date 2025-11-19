@@ -42,3 +42,28 @@ class Network:
             "gateway": gateway,
             "dns_server": dns_server,
         }
+
+    @classmethod
+    def scan_wifi(cls):
+        if cls.__wlan_instance is None:
+            return
+
+        networks = cls.__wlan_instance.scan()
+
+        wifi_list = []
+
+        for ssid, bssid, channel, rssi, auth, hidden in networks:
+            wifi_list.append(
+                {
+                    "ssid": ssid,
+                    "bssid": bssid,
+                    "rssi": rssi,
+                    "channel": channel,
+                    "auth": auth,
+                    "hidden": hidden,
+                    "mac_address": ":".join(f"{b:02x}" for b in bssid),
+                    "signal_strength": rssi,
+                }
+            )
+
+        return wifi_list

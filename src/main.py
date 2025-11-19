@@ -1,6 +1,9 @@
 from services.root import RootService
+from services.geolocation_api import GeolocationApiService
 
 if __name__ == "__main__":
-    service = RootService()
+    geolocation_service = GeolocationApiService()
 
-    service.execute()
+    root_service = RootService(geolocation_service)
+
+    root_service.execute()

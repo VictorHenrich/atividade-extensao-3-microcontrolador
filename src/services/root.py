@@ -2,16 +2,15 @@ import time
 from core.abstract_service import AbstractService
 from core.mqtt import MQTT
 from core.settings import MQTT_GEOLOCATION_TOPIC
-from services.geolocation import GeolocationService
 from utils.logging import Logging
 from utils.network import Network
 
 
 class RootService(AbstractService):
-    def __init__(self):
+    def __init__(self, geolocation_service):
         self.__mqtt_client = MQTT()
 
-        self.__geolocation_service = GeolocationService()
+        self.__geolocation_service = geolocation_service
 
     def __connect_to_network(self):
         try:

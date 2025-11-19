@@ -14,3 +14,6 @@ NETWORK_PASSWORD = ""
 
 GPS_TX_PIN = 0
 GPS_RX_PIN = 0
+
+LOCATION_SERVICE_URL = "https://location.services.mozilla.com/v1/geolocate"
+LOCATION_SERVICE_TOKEN = ""
