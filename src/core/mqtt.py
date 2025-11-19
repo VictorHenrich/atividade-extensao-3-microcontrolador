@@ -72,6 +72,9 @@ class MQTT(MQTTClient):
         if isinstance(data, dict):
             data = json.dumps(data)
 
+        if isinstance(data, str):
+            data = data.encode()
+
         super().publish(topic, data)
 
     def start(self):

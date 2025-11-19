@@ -1,17 +1,29 @@
 import network
-from core.settings import NETWORK_NAME, NETWORK_PASSWORD
+from core.settings import NETWORK_NAME, NETWORK_PASSWORD, NETWORK_IDENTITY
 
 
 class Network:
     __wlan_instance = None
 
     @classmethod
-    def connect_wifi(cls, network_name=NETWORK_NAME, network_password=NETWORK_PASSWORD):
+    def connect_wifi(
+        cls,
+        network_name=NETWORK_NAME,
+        network_password=NETWORK_PASSWORD,
+        network_identity=NETWORK_IDENTITY,
+    ):
         cls.__wlan_instance = network.WLAN(network.STA_IF)
 
         cls.__wlan_instance.active(True)
 
-        cls.__wlan_instance.connect(network_name, network_password)
+        other_params = {}
+
+        if network_identity:
+            other_params["eap"] = network.WLAN.EAP_PEAP
+
+            other_params["identity"] = network_identity
+
+        cls.__wlan_instance.connect(network_name, network_password, **other_params)
 
     @classmethod
     def disconnect_wifi(cls):

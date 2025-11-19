@@ -11,9 +11,10 @@ MQTT_GEOLOCATION_TOPIC = "/vehicle-position"
 
 NETWORK_NAME = ""
 NETWORK_PASSWORD = ""
+NETWORK_IDENTITY = ""
 
 GPS_TX_PIN = 0
 GPS_RX_PIN = 0
 
-LOCATION_SERVICE_URL = "https://location.services.mozilla.com/v1/geolocate"
+LOCATION_SERVICE_URL = "http://ip-api.com/json"
 LOCATION_SERVICE_TOKEN = ""
